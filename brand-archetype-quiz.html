@@ -691,6 +691,15 @@ function retake() {
   answers = new Array(questions.length).fill(null);
   showScreen('screen-intro');
 }
+
+function reportHeight() {
+  const height = document.body.scrollHeight;
+  window.parent.postMessage({ quizHeight: height }, '*');
+}
+
+const resizeObserver = new ResizeObserver(() => reportHeight());
+resizeObserver.observe(document.body);
+window.addEventListener('load', reportHeight);
 </script>
 </body>
 </html>

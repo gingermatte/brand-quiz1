@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brand Archetype Quiz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #efece2;
+    --dark: #221d1c;
+    --light: #faf9f3;
+    --accent: #8c7b5e;
+    --accent-light: #c9b99a;
+    --border: rgba(34,29,28,0.15);
+    --border-strong: rgba(34,29,28,0.35);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background-color: var(--light);
+    color: var(--dark);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0;
+  }
+
+  /* Header */
+  .site-header {
+    width: 100%;
+    background: var(--cream);
+    border-bottom: 1px solid var(--border);
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .site-header .wordmark {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--dark);
+    opacity: 0.6;
+  }
+
+  /* Main container */
+  .container {
+    width: 100%;
+    max-width: 700px;
+    padding: 4rem 2rem 6rem;
+  }
+
+  /* Intro block */
+  .intro {
+    text-align: center;
+    margin-bottom: 3.5rem;
+    animation: fadeUp 0.7s ease both;
+  }
+  .intro-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.25rem;
+  }
+  .intro h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.4rem, 6vw, 3.6rem);
+    font-weight: 300;
+    line-height: 1.15;
+    color: var(--dark);
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.01em;
+  }
+  .intro h1 em {
+    font-style: italic;
+    font-weight: 300;
+  }
+  .intro p {
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: var(--dark);
+    opacity: 0.65;
+    max-width: 480px;
+    margin: 0 auto 2rem;
+  }
+  .start-btn {
+    display: inline-block;
+    background: var(--dark);
+    color: var(--light);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 1rem 2.5rem;
+    border: none;
+    cursor: pointer;
+    transition: background 0.25s, transform 0.15s;
+  }
+  .start-btn:hover { background: var(--accent); transform: translateY(-1px); }
+  .start-btn:active { transform: translateY(0); }
+
+  /* Decorative rule */
+  .ornament {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    opacity: 0.25;
+  }
+  .ornament::before, .ornament::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--dark);
+  }
+  .ornament span {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem;
+    letter-spacing: 0.3em;
+    color: var(--dark);
+  }
+
+  /* Quiz card */
+  .quiz-card {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    padding: 3rem 3rem 2.5rem;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  /* Progress */
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+  .progress-track {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    position: relative;
+  }
+  .progress-fill {
+    position: absolute;
+    left: 0; top: 0;
+    height: 1px;
+    background: var(--dark);
+    transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+  }
+  .progress-text {
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--dark);
+    opacity: 0.4;
+    white-space: nowrap;
+  }
+
+  /* Question */
+  .q-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+    opacity: 0.8;
+  }
+  .q-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.3rem, 3vw, 1.7rem);
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--dark);
+    margin-bottom: 2rem;
+  }
+
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 0.75rem; margin-bottom: 2.5rem; }
+
+  .opt {
+    background: var(--light);
+    border: 1px solid var(--border);
+    padding: 1rem 1.25rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    text-align: left;
+    width: 100%;
+  }
+  .opt:hover { border-color: var(--accent-light); background: #f5f2e8; }
+  .opt.selected {
+    border-color: var(--dark);
+    background: var(--dark);
+  }
+  .opt-indicator {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid var(--border-strong);
+    flex-shrink: 0;
+    margin-top: 2px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .opt.selected .opt-indicator {
+    border-color: var(--cream);
+    background: var(--cream);
+  }
+  .opt.selected .opt-indicator::after {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--dark);
+  }
+  .opt-text {
+    font-size: 0.9rem;
+    line-height: 1.55;
+    color: var(--dark);
+    transition: color 0.2s;
+  }
+  .opt.selected .opt-text { color: var(--cream); }
+
+  /* Nav */
+  .quiz-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .nav-btn {
+    background: transparent;
+    border: 1px solid var(--border-strong);
+    color: var(--dark);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.75rem 1.75rem;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.15s;
+  }
+  .nav-btn:hover:not(:disabled) { background: var(--dark); color: var(--light); border-color: var(--dark); transform: translateY(-1px); }
+  .nav-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+  .nav-btn.primary {
+    background: var(--dark);
+    color: var(--light);
+    border-color: var(--dark);
+  }
+  .nav-btn.primary:hover:not(:disabled) { background: var(--accent); border-color: var(--accent); }
+  .nav-btn.primary:disabled { background: var(--dark); opacity: 0.25; }
+
+  /* Result screen */
+  .result-screen { animation: fadeUp 0.7s ease both; }
+
+  .result-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  .result-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.8rem, 8vw, 4.5rem);
+    font-weight: 300;
+    line-height: 1.05;
+    color: var(--dark);
+    margin-bottom: 0.4rem;
+  }
+  .result-tagline {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--accent);
+    margin-bottom: 2.5rem;
+  }
+
+  .result-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+  @media (max-width: 560px) { .result-body { grid-template-columns: 1fr; } }
+
+  .result-desc-block {
+    grid-column: 1 / -1;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    padding: 1.75rem 2rem;
+  }
+  .result-desc-block p {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: var(--dark);
+    opacity: 0.8;
+  }
+
+  .result-block {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+  }
+  .result-block-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dark);
+    opacity: 0.4;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+  .pill-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .pill {
+    font-size: 0.78rem;
+    padding: 0.35rem 0.9rem;
+    border: 1px solid var(--border-strong);
+    color: var(--dark);
+    letter-spacing: 0.03em;
+  }
+  .pill.strength {
+    background: var(--dark);
+    color: var(--cream);
+    border-color: var(--dark);
+  }
+
+  /* Score bars */
+  .score-list { display: flex; flex-direction: column; gap: 0.85rem; }
+  .score-row { display: flex; align-items: center; gap: 0.75rem; }
+  .score-label {
+    font-size: 0.75rem;
+    color: var(--dark);
+    opacity: 0.6;
+    min-width: 88px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .score-track {
+    flex: 1;
+    height: 2px;
+    background: var(--border);
+    position: relative;
+  }
+  .score-fill {
+    position: absolute;
+    left: 0; top: 0;
+    height: 2px;
+    background: var(--dark);
+    transition: width 0.8s cubic-bezier(0.4,0,0.2,1);
+  }
+  .score-num {
+    font-size: 0.7rem;
+    color: var(--dark);
+    opacity: 0.4;
+    min-width: 20px;
+    text-align: right;
+  }
+
+  .result-cta {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+  }
+  .cta-block {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    padding: 2.25rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+  .cta-block-label {
+    font-size: 0.65rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .cta-block-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    font-weight: 400;
+    line-height: 1.3;
+    color: var(--dark);
+  }
+  .cta-block-heading em {
+    font-style: italic;
+    font-weight: 300;
+  }
+  .cta-block-body {
+    font-size: 0.92rem;
+    line-height: 1.75;
+    color: var(--dark);
+    opacity: 0.7;
+    max-width: 520px;
+  }
+  .cta-link {
+    display: inline-block;
+    background: var(--dark);
+    color: var(--light);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 400;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 0.85rem 2rem;
+    text-decoration: none;
+    transition: background 0.25s, transform 0.15s;
+  }
+  .cta-link:hover { background: var(--accent); transform: translateY(-1px); }
+  .cta-link:active { transform: translateY(0); }
+  .result-cta-btns {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  /* Footer */
+  .site-footer {
+    width: 100%;
+    border-top: 1px solid var(--border);
+    background: var(--cream);
+    padding: 1.5rem 2rem;
+    text-align: center;
+  }
+  .site-footer p {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    color: var(--dark);
+    opacity: 0.35;
+    text-transform: uppercase;
+  }
+
+  /* Transitions */
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 600px) {
+    .quiz-card { padding: 2rem 1.5rem 1.75rem; }
+    .container { padding: 2.5rem 1.25rem 4rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wordmark">Brand Archetype Quiz</div>
+</header>
+
+<div class="container">
+
+  <!-- Intro screen -->
+  <div id="screen-intro" class="screen active">
+    <div class="intro">
+      <div class="intro-label">Discover your brand identity</div>
+      <h1>What archetype<br><em>defines your brand?</em></h1>
+      <p>Answer 12 questions about your brand's values, voice, and vision. We'll reveal which of the 12 universal archetypes your brand embodies — and what that means for how you show up in the world.</p>
+      <button class="start-btn" onclick="startQuiz()">Begin the quiz</button>
+    </div>
+    <div class="ornament"><span>✦</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;border:1px solid var(--border);background:var(--border)">
+      <div style="background:var(--cream);padding:1.5rem;text-align:center">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--dark);margin-bottom:0.25rem">12</div>
+        <div style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--dark);opacity:0.4">Questions</div>
+      </div>
+      <div style="background:var(--cream);padding:1.5rem;text-align:center">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--dark);margin-bottom:0.25rem">12</div>
+        <div style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--dark);opacity:0.4">Archetypes</div>
+      </div>
+      <div style="background:var(--cream);padding:1.5rem;text-align:center">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:300;color:var(--dark);margin-bottom:0.25rem">~3</div>
+        <div style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--dark);opacity:0.4">Minutes</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quiz screen -->
+  <div id="screen-quiz" class="screen">
+    <div class="quiz-card">
+      <div class="progress-wrap">
+        <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+        <div class="progress-text" id="progress-text">1 / 12</div>
+      </div>
+      <div class="q-number" id="q-number"></div>
+      <div class="q-text" id="q-text"></div>
+      <div class="options" id="options"></div>
+      <div class="quiz-nav">
+        <button class="nav-btn" id="back-btn" onclick="goBack()" disabled>← Back</button>
+        <button class="nav-btn primary" id="next-btn" onclick="goNext()" disabled>Continue →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Result screen -->
+  <div id="screen-result" class="screen">
+    <div class="result-screen">
+      <div class="result-eyebrow">Your brand archetype</div>
+      <div class="result-name" id="r-name"></div>
+      <div class="result-tagline" id="r-tagline"></div>
+      <div class="result-body">
+        <div class="result-desc-block"><p id="r-desc"></p></div>
+        <div class="result-block">
+          <div class="result-block-label">Brands that share your archetype</div>
+          <div class="pill-list" id="r-brands"></div>
+        </div>
+        <div class="result-block">
+          <div class="result-block-label">Your core strengths</div>
+          <div class="pill-list" id="r-strengths"></div>
+        </div>
+        <div class="result-block" style="grid-column:1/-1">
+          <div class="result-block-label">Archetype score breakdown</div>
+          <div class="score-list" id="r-scores"></div>
+        </div>
+      </div>
+      <div class="result-cta">
+        <div class="cta-block">
+          <div class="cta-block-label">Work with us</div>
+          <div class="cta-block-heading">Ready to build a brand<br><em>that truly feels like you?</em></div>
+          <p class="cta-block-body">Now that you know your archetype, the real work begins. If you'd like to go deeper into your brand strategy and have a full brand identity crafted for your business, we'd love to hear from you.</p>
+          <a class="cta-link" href="https://www.thegingerstudio.com/contact" target="_blank" rel="noopener">Get in touch &rarr;</a>
+        </div>
+        <div class="result-cta-btns">
+          <button class="nav-btn primary" onclick="retake()">&#8592; Retake quiz</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="site-footer">
+  <p>Brand Archetype Quiz &mdash; Based on the 12 Jungian archetypes</p>
+</footer>
+
+<script>
+const archetypes = {
+  innocent:  {name:"The Innocent",      tagline:"Pure, optimistic, and good",          desc:"Your brand radiates happiness, simplicity, and authenticity. You believe in the goodness of people and the world. You offer customers a sense of safety, optimism, and the promise that life can be good — free from harm or complexity. Customers trust you implicitly and feel uplifted by your presence.", brands:["Dove","Coca-Cola","McDonald's","Aveeno","Innocent Drinks"], strengths:["Trustworthy","Optimistic","Honest","Simple","Wholesome"]},
+  explorer:  {name:"The Explorer",      tagline:"Free-spirited, daring, authentic",     desc:"Your brand is driven by the desire for freedom, discovery, and self-expression. You help customers break free from conformity, explore new territories, and find themselves. You attract adventurous souls who value authenticity and the open road over comfort.", brands:["Jeep","Patagonia","The North Face","REI","Lonely Planet"], strengths:["Adventurous","Independent","Authentic","Curious","Bold"]},
+  sage:      {name:"The Sage",          tagline:"Truth-seeking, knowledge, wisdom",     desc:"Your brand is committed to truth, knowledge, and helping people understand the world better. Customers come to you as a trusted authority and expert. You build credibility through insight, analysis, and education — and your audience values depth over flash.", brands:["Google","TED","BBC","Britannica","McKinsey"], strengths:["Knowledgeable","Trustworthy","Analytical","Thoughtful","Expert"]},
+  hero:      {name:"The Hero",          tagline:"Courageous, bold, inspiring",          desc:"Your brand is built to inspire people to push past their limits and achieve the extraordinary. You're courageous, driven, and results-oriented. Customers feel empowered and motivated by you — you stand for mastery, determination, and making the world a better place through strength.", brands:["Nike","FedEx","BMW","Red Cross","Duracell"], strengths:["Inspiring","Determined","Courageous","Competent","Driven"]},
+  outlaw:    {name:"The Outlaw",        tagline:"Rebel, disruptive, radical change",    desc:"Your brand challenges the status quo and breaks the rules — on purpose. You speak to those who feel like outsiders and want to overturn what isn't working. You're provocative, bold, and unafraid of controversy. Customers who choose you are making a statement.", brands:["Harley-Davidson","Virgin","Diesel","Patagonia","Oatly"], strengths:["Daring","Disruptive","Provocative","Authentic","Fearless"]},
+  magician:  {name:"The Magician",      tagline:"Visionary, transformative, magical",   desc:"Your brand makes dreams come true and turns visions into reality. You are a master of transformation — whether emotional, physical, or experiential. Customers come to you for moments that feel almost magical, believing you can change their world in ways that seem impossible.", brands:["Disney","Apple","Dyson","Polaroid","Tesla"], strengths:["Visionary","Transformative","Inspiring","Innovative","Mystical"]},
+  regular:   {name:"The Regular Person",tagline:"Relatable, down-to-earth, belonging",  desc:"Your brand stands for belonging, equality, and the everyday. You're approachable, unpretentious, and make everyone feel welcome. You don't talk down to customers — you're one of them. Your greatest strength is that people feel they can trust and relate to you completely.", brands:["IKEA","Target","Budweiser","Levi's","eBay"], strengths:["Relatable","Humble","Friendly","Inclusive","Practical"]},
+  lover:     {name:"The Lover",         tagline:"Passionate, sensual, intimate",        desc:"Your brand is all about connection, beauty, pleasure, and desire. You help people feel special, loved, and deeply connected — to each other, to themselves, or to an experience. You appeal to the senses and emotions, making every interaction feel intimate and indulgent.", brands:["Chanel","Victoria's Secret","Häagen-Dazs","Hallmark","Alfa Romeo"], strengths:["Passionate","Sensual","Devoted","Warm","Beautiful"]},
+  jester:    {name:"The Jester",        tagline:"Playful, fun, lives in the moment",    desc:"Your brand brings joy, humor, and lightness to everything you do. You don't take yourself too seriously — and that's exactly why people love you. You cut through tension and create genuine moments of delight. Customers associate you with laughter, spontaneity, and good vibes.", brands:["Old Spice","Skittles","Ben & Jerry's","Dollar Shave Club","Mailchimp"], strengths:["Fun","Playful","Spontaneous","Witty","Joyful"]},
+  caregiver: {name:"The Caregiver",     tagline:"Nurturing, protective, generous",      desc:"Your brand is driven by genuine compassion and a desire to serve. You put customers first, prioritizing their wellbeing above all else. People feel genuinely cared for when they interact with you — safe, supported, and valued. You build deep loyalty through consistent empathy.", brands:["Johnson & Johnson","UNICEF","Pampers","Volvo","Aetna"], strengths:["Empathetic","Nurturing","Generous","Reliable","Protective"]},
+  creator:   {name:"The Creator",       tagline:"Innovative, expressive, imaginative",  desc:"Your brand exists to make things — to build, design, and express something meaningful and lasting. You celebrate craftsmanship, originality, and the creative process. Customers who choose you value self-expression, and they see your products or services as a canvas for their own creativity.", brands:["Adobe","Lego","Pinterest","YouTube","Crayola"], strengths:["Creative","Expressive","Innovative","Imaginative","Crafted"]},
+  ruler:     {name:"The Ruler",         tagline:"Commanding, prestigious, in control",  desc:"Your brand projects authority, exclusivity, and excellence. You attract customers who want the very best — and who understand that premium quality comes at a premium price. You inspire confidence through your expertise, your standards, and your unwillingness to compromise.", brands:["Rolex","Mercedes-Benz","Louis Vuitton","American Express","Microsoft"], strengths:["Prestigious","Authoritative","Excellent","Reliable","Powerful"]},
+};
+
+const questions = [
+  {text:"What is the core promise your brand makes to customers?",opts:[{text:"We'll make life simpler, happier, and more joyful",scores:{innocent:3,caregiver:1,jester:2}},{text:"We'll help you discover who you truly are",scores:{explorer:3,sage:1,creator:1}},{text:"We'll give you the knowledge to make better decisions",scores:{sage:3,ruler:1,caregiver:1}},{text:"We'll help you achieve extraordinary results",scores:{hero:3,ruler:1,magician:1}}]},
+  {text:"Which sentence best captures your brand's personality?",opts:[{text:"We're the fun, witty friend who makes everything lighter",scores:{jester:3,regular:1,lover:1}},{text:"We're the wise mentor you turn to when it really matters",scores:{sage:3,caregiver:1,ruler:1}},{text:"We're the passionate partner who makes you feel alive",scores:{lover:3,magician:1,outlaw:1}},{text:"We're the trusted neighbor who's always there for you",scores:{regular:3,caregiver:2,innocent:1}}]},
+  {text:"When your customer faces a challenge, your brand's instinct is to…",opts:[{text:"Inspire them to push through and conquer it",scores:{hero:3,ruler:1,explorer:1}},{text:"Wrap them in care and make them feel safe",scores:{caregiver:3,innocent:2,lover:1}},{text:"Disrupt the system that created the problem",scores:{outlaw:3,explorer:1,hero:1}},{text:"Transform the challenge into something magical",scores:{magician:3,creator:2,jester:1}}]},
+  {text:"How does your brand feel about rules and conventions?",opts:[{text:"We respect them — structure creates quality and trust",scores:{ruler:3,sage:1,caregiver:1}},{text:"We follow them when useful, but we question everything",scores:{sage:2,explorer:2,outlaw:1}},{text:"We love bending rules to create something new and original",scores:{creator:3,outlaw:2,magician:1}},{text:"We break them — we exist to challenge what's accepted",scores:{outlaw:3,hero:1,explorer:1}}]},
+  {text:"Which emotion do you most want customers to feel after engaging with your brand?",opts:[{text:"Safe, cared for, and at peace",scores:{caregiver:3,innocent:2,regular:1}},{text:"Excited, inspired, and ready to act",scores:{hero:3,magician:2,explorer:1}},{text:"Joyful, entertained, and uplifted",scores:{jester:3,innocent:2,lover:1}},{text:"Desire, beauty, and deep connection",scores:{lover:3,magician:1,creator:1}}]},
+  {text:"What does your brand believe about the world?",opts:[{text:"The world is full of wonder — go explore it",scores:{explorer:3,magician:2,innocent:1}},{text:"The world can be transformed if we dare to dream",scores:{magician:3,creator:2,hero:1}},{text:"People deserve the best — excellence is non-negotiable",scores:{ruler:3,hero:1,creator:1}},{text:"Everyone belongs and deserves to be treated equally",scores:{regular:3,caregiver:2,innocent:1}}]},
+  {text:"Pick the brand story that resonates most with yours:",opts:[{text:"Underdog rises through grit and determination to win",scores:{hero:3,outlaw:1,explorer:1}},{text:"Misfit rejects the mainstream and builds something real",scores:{outlaw:3,regular:1,explorer:2}},{text:"Inventor crafts something no one has ever seen before",scores:{creator:3,magician:2,sage:1}},{text:"Neighbor becomes the most trusted person in the community",scores:{regular:3,caregiver:2,innocent:1}}]},
+  {text:"What role does your brand play in your customer's life?",opts:[{text:"The guide who gives them knowledge and clarity",scores:{sage:3,ruler:1,caregiver:1}},{text:"The companion who celebrates and plays with them",scores:{jester:3,regular:2,lover:1}},{text:"The enabler who helps them create and express themselves",scores:{creator:3,explorer:1,magician:1}},{text:"The protector who keeps them and their family safe",scores:{caregiver:3,ruler:1,innocent:2}}]},
+  {text:"How would your brand describe its aesthetic and visual style?",opts:[{text:"Clean, minimal, timeless — quality speaks for itself",scores:{ruler:3,innocent:1,sage:1}},{text:"Bold, raw, unconventional — we stand out on purpose",scores:{outlaw:3,creator:2,hero:1}},{text:"Warm, soft, human — we feel approachable and kind",scores:{caregiver:3,innocent:2,regular:1}},{text:"Rich, sensuous, beautiful — every detail is crafted",scores:{lover:3,creator:2,ruler:1}}]},
+  {text:"Your brand's customers are most likely to say:",opts:[{text:"'This brand just gets me — I feel totally at home here'",scores:{regular:3,caregiver:1,innocent:1}},{text:"'Using this brand makes me feel powerful and confident'",scores:{hero:3,ruler:2,magician:1}},{text:"'This brand is unlike anything else — it changed my life'",scores:{magician:3,outlaw:2,creator:1}},{text:"'This brand always makes me smile and feel good'",scores:{jester:3,innocent:2,lover:1}}]},
+  {text:"What drives your brand's innovation and growth?",opts:[{text:"Deeper knowledge and sharper insights",scores:{sage:3,ruler:1,creator:1}},{text:"More freedom and wider territories to explore",scores:{explorer:3,creator:1,outlaw:1}},{text:"Stronger craft and higher standards of excellence",scores:{creator:3,ruler:2,hero:1}},{text:"Greater reach so we can help more people",scores:{caregiver:3,regular:1,innocent:1}}]},
+  {text:"If your brand were a person at a party, they would be…",opts:[{text:"The life of the party — making everyone laugh",scores:{jester:3,regular:1,lover:1}},{text:"The fascinating storyteller everyone gathers around",scores:{sage:3,magician:1,explorer:1}},{text:"The one who sparks deep conversations about meaning and change",scores:{outlaw:3,explorer:1,sage:1}},{text:"The gracious host making sure everyone feels welcome",scores:{caregiver:3,innocent:1,regular:2}}]},
+];
+
+let current = 0;
+let answers = new Array(questions.length).fill(null);
+
+const ordinals = ["One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten","Eleven","Twelve"];
+
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function startQuiz() {
+  current = 0;
+  answers = new Array(questions.length).fill(null);
+  render();
+  showScreen('screen-quiz');
+}
+
+function render() {
+  const q = questions[current];
+  document.getElementById('q-number').textContent = `Question ${ordinals[current]}`;
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('progress-fill').style.width = `${((current + 1) / questions.length) * 100}%`;
+  document.getElementById('progress-text').textContent = `${current + 1} / ${questions.length}`;
+
+  const opts = document.getElementById('options');
+  opts.innerHTML = '';
+  q.opts.forEach((o, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt' + (answers[current] === i ? ' selected' : '');
+    btn.innerHTML = `<span class="opt-indicator"></span><span class="opt-text">${o.text}</span>`;
+    btn.onclick = () => select(i);
+    opts.appendChild(btn);
+  });
+
+  document.getElementById('back-btn').disabled = current === 0;
+  const nb = document.getElementById('next-btn');
+  nb.disabled = answers[current] === null;
+  nb.textContent = current === questions.length - 1 ? 'See my result →' : 'Continue →';
+}
+
+function select(i) {
+  answers[current] = i;
+  document.querySelectorAll('.opt').forEach((b, idx) => {
+    b.classList.toggle('selected', idx === i);
+  });
+  document.getElementById('next-btn').disabled = false;
+}
+
+function goNext() {
+  if (answers[current] === null) return;
+  if (current === questions.length - 1) { showResult(); return; }
+  current++;
+  render();
+}
+
+function goBack() {
+  if (current > 0) { current--; render(); }
+}
+
+function showResult() {
+  const totals = {};
+  Object.keys(archetypes).forEach(k => totals[k] = 0);
+  questions.forEach((q, qi) => {
+    if (answers[qi] === null) return;
+    Object.entries(q.opts[answers[qi]].scores).forEach(([k, v]) => { totals[k] = (totals[k] || 0) + v; });
+  });
+  const sorted = Object.entries(totals).sort((a, b) => b[1] - a[1]);
+  const winner = sorted[0][0];
+  const max = sorted[0][1];
+  const a = archetypes[winner];
+
+  document.getElementById('r-name').textContent = a.name;
+  document.getElementById('r-tagline').textContent = `"${a.tagline}"`;
+  document.getElementById('r-desc').textContent = a.desc;
+  document.getElementById('r-brands').innerHTML = a.brands.map(b => `<span class="pill">${b}</span>`).join('');
+  document.getElementById('r-strengths').innerHTML = a.strengths.map(s => `<span class="pill strength">${s}</span>`).join('');
+
+  const scoreEl = document.getElementById('r-scores');
+  scoreEl.innerHTML = sorted.slice(0, 7).map(([k, v]) => `
+    <div class="score-row">
+      <div class="score-label">${archetypes[k].name.replace('The ','')}</div>
+      <div class="score-track"><div class="score-fill" style="width:${Math.round((v/max)*100)}%"></div></div>
+      <div class="score-num">${v}</div>
+    </div>`).join('');
+
+  showScreen('screen-result');
+}
+
+function retake() {
+  current = 0;
+  answers = new Array(questions.length).fill(null);
+  showScreen('screen-intro');
+}
+</script>
+</body>
+</html>
